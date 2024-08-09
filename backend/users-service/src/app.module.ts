@@ -5,6 +5,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { Permissions } from './permissions/permissions.model';
 import { PermissionsModule } from './permissions/permissions.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { ListPermissions } from './list-permissions/list_permissions.model';
+import { ListPermissionsModule } from './list-permissions/list_permissions.module';
 
 @Module({
   imports: [
@@ -12,6 +15,11 @@ import { PermissionsModule } from './permissions/permissions.module';
      * module configuration .env
      */
     ConfigModule.forRoot(),
+
+    /**
+     * Event Emiter module
+     */
+    EventEmitterModule.forRoot(),
 
     /**
      * ORM Sequelize
@@ -23,7 +31,7 @@ import { PermissionsModule } from './permissions/permissions.module';
       username: 'postgres',
       password: process.env.POSTGRES_PASSWORD,
       database: 'yubitech',
-      models: [Permissions],
+      models: [Permissions, ListPermissions],
       autoLoadModels: true,
     }),
 
@@ -41,6 +49,7 @@ import { PermissionsModule } from './permissions/permissions.module';
      * module lainnya
      */
     PermissionsModule,
+    ListPermissionsModule,
   ],
   providers: [
     /**

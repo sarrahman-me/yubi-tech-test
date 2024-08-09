@@ -15,7 +15,7 @@ import { IResponseType } from 'src/interfaces/responseType.interface';
 
 @Controller('/permissions')
 export class PermissionsController {
-  constructor(private readonly izinService: PermissionsService) {}
+  constructor(private readonly permissionsService: PermissionsService) {}
 
   @Get()
   @HttpCode(200)
@@ -25,7 +25,7 @@ export class PermissionsController {
     @Query('search') search?: string,
   ): Promise<IResponseType<Permissions[]>> {
     try {
-      const { data, metadata } = await this.izinService.findAll({
+      const { data, metadata } = await this.permissionsService.findAll({
         page,
         limit,
         search,
@@ -54,7 +54,7 @@ export class PermissionsController {
     @Body() payload: Partial<Permissions>,
   ): Promise<IResponseType<Permissions>> {
     try {
-      const data = await this.izinService.add(payload);
+      const data = await this.permissionsService.add(payload);
 
       return {
         data,
@@ -77,7 +77,7 @@ export class PermissionsController {
   @HttpCode(200)
   async delete(@Param('id') id: number): Promise<IResponseType<Permissions>> {
     try {
-      const data = await this.izinService.delete(id);
+      const data = await this.permissionsService.delete(id);
 
       return {
         data,

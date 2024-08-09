@@ -1,11 +1,11 @@
-import { Column, Model, Table } from 'sequelize-typescript';
-// import { ListIzin } from 'src/list-izin/list-izin.model';
+import { Column, HasMany, Model, Table } from 'sequelize-typescript';
+import { ListPermissions } from 'src/list-permissions/list_permissions.model';
 
 @Table
 export class Permissions extends Model<Permissions> {
   @Column
   nama: string;
 
-  //   @HasMany(() => ListIzin, { onDelete: 'CASCADE' })
-  //   list_izin: ListIzin[];
+  @HasMany(() => ListPermissions, { onDelete: 'CASCADE' })
+  list_izin: ListPermissions[];
 }

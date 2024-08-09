@@ -6,12 +6,16 @@ import {
   IErrorResponse,
   IMetadata,
 } from 'src/interfaces/responseType.interface';
+import { ListPermissions } from 'src/list-permissions/list_permissions.model';
 
 @Injectable()
 export class PermissionsService {
   constructor(
     @InjectModel(Permissions)
     private permissionsModel: typeof Permissions,
+
+    @InjectModel(Permissions)
+    private listPermissions: typeof ListPermissions,
   ) {}
 
   /**
@@ -46,6 +50,9 @@ export class PermissionsService {
       offset,
       limit,
       where: whereClause,
+      include: {
+        model: ListPermissions,
+      },
       distinct: true,
     });
 
@@ -155,17 +162,24 @@ export class PermissionsService {
       );
     }
 
-    // const izinUsage = await this.listpermissionsModel.findOne({
-    //   where: {
-    //     id,
-    //   },
-    // });
+    const izinUsage = await this.listPermissions.findOne({
+      where: {
+        id,
+      },
+    });
 
-    // if (izinUsage) {
-    //   throw new NotAcceptableException(
-    //     'Izin ini digunakan oleh peran tertentu',
-    //   );
-    // }
+    if (izinUsage) {
+      throw new HttpException(
+        {
+          status_code: 406,
+          message: 'Izin ini digunakan oleh peran tertentu',
+          detail: null,
+          field: null,
+          help: 'Hapus izin ini dari semua peran sebelum menghapus',
+        } as IErrorResponse,
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
 
     await this.permissionsModel.destroy({
       where: {
