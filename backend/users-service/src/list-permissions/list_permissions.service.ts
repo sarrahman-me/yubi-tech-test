@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ListPermissions } from './list_permissions.model';
 import { OnEvent } from '@nestjs/event-emitter';
 import { Permissions } from 'src/permissions/permissions.model';
+import { IListPermissionsPayload } from 'src/interfaces/listPermissionPayload.interface';
 
 @Injectable()
 export class ListPermissionsService {
@@ -22,10 +23,7 @@ export class ListPermissionsService {
   async addListIzinWhenNewPeranAdded({
     role_id,
     list_permission_id,
-  }: {
-    role_id: number;
-    list_permission_id: number[];
-  }): Promise<void> {
+  }: IListPermissionsPayload): Promise<void> {
     await this.listPermissions.destroy({
       where: {
         role_id,

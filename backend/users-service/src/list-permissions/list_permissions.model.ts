@@ -6,6 +6,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { Permissions } from 'src/permissions/permissions.model';
+import { Role } from 'src/role/role.model';
 
 @Table
 export class ListPermissions extends Model<ListPermissions> {
@@ -13,12 +14,12 @@ export class ListPermissions extends Model<ListPermissions> {
   permissions_name: string;
 
   // peran relationship
-  //   @ForeignKey(() => Peran)
+  @ForeignKey(() => Role)
   @Column
   role_id: number;
 
-  //   @BelongsTo(() => Peran)
-  //   peran: Peran;
+  @BelongsTo(() => Role)
+  role: Role;
 
   // izin relationship
   @ForeignKey(() => Permissions)

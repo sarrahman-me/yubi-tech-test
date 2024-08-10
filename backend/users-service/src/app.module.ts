@@ -7,7 +7,12 @@ import { Permissions } from './permissions/permissions.model';
 import { PermissionsModule } from './permissions/permissions.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ListPermissions } from './list-permissions/list_permissions.model';
+import { Role } from './role/role.model';
 import { ListPermissionsModule } from './list-permissions/list_permissions.module';
+import { RoleModule } from './role/role.module';
+import { Users } from './users/users.model';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -31,7 +36,7 @@ import { ListPermissionsModule } from './list-permissions/list_permissions.modul
       username: 'postgres',
       password: process.env.POSTGRES_PASSWORD,
       database: 'yubitech',
-      models: [Permissions, ListPermissions],
+      models: [Permissions, ListPermissions, Role, Users],
       autoLoadModels: true,
     }),
 
@@ -50,6 +55,9 @@ import { ListPermissionsModule } from './list-permissions/list_permissions.modul
      */
     PermissionsModule,
     ListPermissionsModule,
+    RoleModule,
+    AuthModule,
+    UsersModule,
   ],
   providers: [
     /**
