@@ -11,7 +11,7 @@ export class ListPermissionsService {
     @InjectModel(ListPermissions)
     private listPermissions: typeof ListPermissions,
 
-    @InjectModel(ListPermissions)
+    @InjectModel(Permissions)
     private permissions: typeof Permissions,
   ) {}
 
@@ -54,7 +54,7 @@ export class ListPermissionsService {
       const payload: Partial<ListPermissions> = {
         permissions_id,
         role_id,
-        permissions_name: permissionData.nama,
+        permissions_name: permissionData.name,
       };
 
       await this.listPermissions.create(payload);

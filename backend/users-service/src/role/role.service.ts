@@ -17,10 +17,13 @@ export class RoleService {
     private readonly event: EventEmitter2,
 
     @InjectModel(Role)
-    private roleModel: typeof Role,
+    private role: typeof Role,
 
     @InjectModel(Users)
-    private usersModel: typeof Users,
+    private user: typeof Users,
+
+    @InjectModel(ListPermissions)
+    private listPermissions: typeof ListPermissions,
   ) {}
 
   /**
@@ -51,12 +54,13 @@ export class RoleService {
       };
     }
 
-    const { count, rows } = await this.roleModel.findAndCountAll({
+    const { count, rows } = await this.role.findAndCountAll({
       offset,
       limit,
       where: whereClause,
       include: {
         model: ListPermissions,
+        as: 'list_permissions',
       },
       distinct: true,
     });
@@ -81,12 +85,10 @@ export class RoleService {
    * @returns peran terkait
    */
   async find(id: number): Promise<Role> {
-    const data = await this.roleModel.findOne({
-      where: {
-        id,
-      },
+    const data = await this.role.findByPk(id, {
       include: {
         model: ListPermissions,
+        as: 'list_permissions',
       },
     });
 
@@ -110,18 +112,21 @@ export class RoleService {
    * Menambahkan data peran baru serta menambahkan list izin yang dimilikinya melalui event emitter
    * @returns data peran baru
    */
-  async add(payload: { nama: string; list_id_izin: number[] }): Promise<Role> {
+  async add(payload: {
+    name: string;
+    list_permissions_id: number[];
+  }): Promise<Role> {
     const errorField: Record<string, string> = {};
 
-    if (payload.nama) {
-      errorField['nama'] = 'Nama tidak boleh kosong';
+    if (!payload.name) {
+      errorField['nama'] = 'Nama Peran tidak boleh kosong';
     }
 
     if (
-      !Array.isArray(payload.list_id_izin) ||
-      payload.list_id_izin.length === 0
+      !Array.isArray(payload.list_permissions_id) ||
+      payload.list_permissions_id.length === 0
     ) {
-      errorField['list_id_izin'] = 'Peran harus memiliki minimal 1 izin';
+      errorField['list_permissions_id'] = 'Peran harus memiliki minimal 1 izin';
     }
 
     if (Object.keys(errorField).length > 0) {
@@ -137,9 +142,9 @@ export class RoleService {
       );
     }
 
-    const existingData = await this.roleModel.findOne({
+    const existingData = await this.role.findOne({
       where: {
-        nama: payload.nama,
+        name: payload.name,
       },
     });
 
@@ -156,12 +161,12 @@ export class RoleService {
       );
     }
 
-    const newPeran = await this.roleModel.create({ nama: payload.nama });
+    const newPeran = await this.role.create({ name: payload.name });
 
     // pemicu untuk menambahkan data list izin dengan id peran yang baru dibuat dan daftar id izin yang dikirimkan
     const payloadListPermission: IListPermissionsPayload = {
       role_id: newPeran.id,
-      list_permission_id: payload.list_id_izin,
+      list_permission_id: payload.list_permissions_id,
     };
 
     this.event.emit('add.list-permissions', payloadListPermission);
@@ -178,21 +183,21 @@ export class RoleService {
   async update(
     id: number,
     payload: {
-      nama: string;
-      list_id_izin: number[];
+      name: string;
+      list_permissions_id: number[];
     },
   ): Promise<Role> {
     const errorField: Record<string, string> = {};
 
-    if (payload.nama) {
-      errorField['nama'] = 'Nama tidak boleh kosong';
+    if (!payload.name) {
+      errorField['name'] = 'Nama Peran tidak boleh kosong';
     }
 
     if (
-      !Array.isArray(payload.list_id_izin) ||
-      payload.list_id_izin.length === 0
+      !Array.isArray(payload.list_permissions_id) ||
+      payload.list_permissions_id.length === 0
     ) {
-      errorField['list_id_izin'] = 'Peran harus memiliki minimal 1 izin';
+      errorField['list_permissions_id'] = 'Peran harus memiliki minimal 1 izin';
     }
 
     if (Object.keys(errorField).length > 0) {
@@ -208,7 +213,7 @@ export class RoleService {
       );
     }
 
-    const existingData = await this.roleModel.findByPk(id);
+    const existingData = await this.role.findByPk(id);
 
     if (!existingData) {
       throw new HttpException(
@@ -223,29 +228,30 @@ export class RoleService {
       );
     }
 
-    await this.roleModel.update(payload, {
+    await this.role.update(payload, {
       where: {
         id,
       },
     });
 
-    // pemicu menambahkan data list izin dengan id peran dan daftar id izin yang dikirimkan
-    this.event.emit('add.list-izin', {
-      id_peran: id,
-      list_id_izin: payload.list_id_izin,
-    });
+    // pemicu untuk menambahkan data list izin dengan id peran yang baru dibuat dan daftar id izin yang dikirimkan
+    const payloadListPermission: IListPermissionsPayload = {
+      role_id: id,
+      list_permission_id: payload.list_permissions_id,
+    };
 
-    return this.roleModel.findByPk(id);
+    this.event.emit('add.list-permissions', payloadListPermission);
+
+    return this.role.findByPk(id);
   }
 
   /**
    * Menghapus data peran dengan id tertentu setelah beberapa validasi
-   * * Fungsi ini juga akan menghapus data list izin terkait dengannya melalui Cascade pada database
    * @param {number} id
    * @returns peran yang baru dihapus
    */
   async delete(id: number): Promise<Role> {
-    const existingData = await this.roleModel.findByPk(id);
+    const existingData = await this.role.findByPk(id);
 
     if (!existingData) {
       throw new HttpException(
@@ -254,13 +260,13 @@ export class RoleService {
           message: 'Data peran tidak ditemukan',
           detail: null,
           field: null,
-          help: null,
+          help: 'Pastikan peran memang sudah ada di sistem',
         } as IErrorResponse,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const userUsageRole = await this.usersModel.findOne({
+    const userUsageRole = await this.user.findOne({
       where: {
         role_id: id,
       },
@@ -279,7 +285,14 @@ export class RoleService {
       );
     }
 
-    await this.roleModel.destroy({
+    // hapus semua list izin terkait dengannya
+    await this.listPermissions.destroy({
+      where: {
+        role_id: id,
+      },
+    });
+
+    await this.role.destroy({
       where: {
         id,
       },

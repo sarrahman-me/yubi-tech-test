@@ -4,8 +4,8 @@ import { ListPermissions } from 'src/list-permissions/list_permissions.model';
 @Table
 export class Role extends Model<Role> {
   @Column
-  nama: string;
+  name: string;
 
-  @HasMany(() => ListPermissions, { onDelete: 'CASCADE' })
+  @HasMany(() => ListPermissions)
   list_permissions: ListPermissions[];
 }

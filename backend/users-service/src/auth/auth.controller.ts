@@ -4,7 +4,6 @@ import {
   Controller,
   Get,
   HttpException,
-  HttpStatus,
   Post,
   Request,
   UseGuards,
@@ -12,12 +11,13 @@ import {
 import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { IResponseType } from 'src/interfaces/responseType.interface';
+import { Users } from 'src/users/users.model';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('masuk')
+  @Post('login')
   async masuk(
     @Body() data: { email: string; password: string },
   ): Promise<IResponseType<{ token: string }>> {
@@ -47,12 +47,12 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('profile')
-  async profile(@Request() req: any) {
+  async profile(@Request() req: any): Promise<IResponseType<Users>> {
     try {
       return {
-        message: 'Berhasil Mendapatkan user yang login',
-        status: HttpStatus.OK,
         data: req.user,
+        metadata: null,
+        error: null,
       };
     } catch (error) {
       throw new HttpException(

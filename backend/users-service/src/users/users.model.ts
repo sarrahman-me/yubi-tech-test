@@ -11,7 +11,7 @@ import { Role } from 'src/role/role.model';
 @Table
 export class Users extends Model<Users> {
   @Column
-  nama: string;
+  name: string;
 
   @Unique
   @Column

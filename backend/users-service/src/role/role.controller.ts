@@ -13,7 +13,7 @@ import { Role } from './role.model';
 import { RoleService } from './role.service';
 import { IResponseType } from 'src/interfaces/responseType.interface';
 
-@Controller('/peran')
+@Controller('/role')
 export class RoleController {
   constructor(private readonly peranService: RoleService) {}
 
@@ -71,7 +71,7 @@ export class RoleController {
 
   @Post()
   async add(
-    @Body() payload: { nama: string; list_id_izin: number[] },
+    @Body() payload: { name: string; list_permissions_id: number[] },
   ): Promise<IResponseType<Role>> {
     try {
       const peran = await this.peranService.add(payload);
@@ -98,8 +98,8 @@ export class RoleController {
     @Param('id') id: number,
     @Body()
     payload: {
-      nama: string;
-      list_id_izin: number[];
+      name: string;
+      list_permissions_id: number[];
     },
   ): Promise<IResponseType<Role>> {
     try {
@@ -133,14 +133,7 @@ export class RoleController {
         error: null,
       };
     } catch (error) {
-      throw new HttpException(
-        {
-          data: null,
-          metadata: null,
-          error: error.response,
-        } as IResponseType<Permissions>,
-        error.response.status_code,
-      );
+      throw error;
     }
   }
 }

@@ -1,10 +1,11 @@
 import * as bcrypt from 'bcrypt';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { RoleService } from 'src/role/role.service';
 import { Users } from 'src/users/users.model';
 import { IJwtPayload } from 'src/interfaces/jwtPayload.interface';
+import { IErrorResponse } from 'src/interfaces/responseType.interface';
 
 @Injectable()
 export class AuthService {
@@ -30,21 +31,41 @@ export class AuthService {
       const user = await this.usersService.findbyEmail(email);
 
       if (!user) {
-        throw new UnauthorizedException('Email atau Password salah');
+        throw new HttpException(
+          {
+            status_code: 400,
+            message: 'Akun tidak ditemukan',
+            detail: null,
+            field: null,
+            help: 'hubungi administrator untuk membuat akun baru',
+          } as IErrorResponse,
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) {
-        throw new UnauthorizedException('Email atau Password salah');
+        throw new HttpException(
+          {
+            status_code: 400,
+            message: 'Password salah',
+            detail: null,
+            field: {
+              password: 'password tidak cocok',
+            },
+            help: null,
+          } as IErrorResponse,
+          HttpStatus.BAD_REQUEST,
+        );
       }
 
-      const peran = await this.roleService.find(user.role_id);
+      const role = await this.roleService.find(user.role_id);
 
       const payload: IJwtPayload = {
         email: user.email,
         role_id: user.role_id,
-        list_permissions: peran.list_permissions.map((a) => a.permissions_name),
+        list_permissions: role.list_permissions.map((a) => a.permissions_name),
       };
 
       return this.jwt.signAsync(payload, {

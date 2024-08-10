@@ -13,18 +13,17 @@ export class ListPermissions extends Model<ListPermissions> {
   @Column
   permissions_name: string;
 
-  // peran relationship
   @ForeignKey(() => Role)
   @Column
   role_id: number;
 
-  @BelongsTo(() => Role)
-  role: Role;
-
-  // izin relationship
   @ForeignKey(() => Permissions)
   @Column
   permissions_id: number;
+
+  // relasi data ke model lain
+  @BelongsTo(() => Role)
+  role: Role;
 
   @BelongsTo(() => Permissions)
   permissions: Permissions;

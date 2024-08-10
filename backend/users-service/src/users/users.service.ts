@@ -13,10 +13,10 @@ import {
 export class UsersService {
   constructor(
     @InjectModel(Users)
-    private usersModel: typeof Users,
+    private users: typeof Users,
 
     @InjectModel(Role)
-    private roleModel: typeof Role,
+    private role: typeof Role,
   ) {}
 
   /**
@@ -40,17 +40,18 @@ export class UsersService {
 
     if (search) {
       whereClause = {
-        [Op.or]: [{ nama: { [Op.like]: `%${search}%` } }],
+        [Op.or]: [{ name: { [Op.like]: `%${search}%` } }],
       };
     }
 
-    const { count, rows } = await this.usersModel.findAndCountAll({
+    const { count, rows } = await this.users.findAndCountAll({
       offset,
       limit,
       where: whereClause,
       include: [
         {
           model: Role,
+          as: 'role',
         },
       ],
       distinct: true,
@@ -76,7 +77,7 @@ export class UsersService {
    * @returns Pengguna yang ditemukan.
    */
   async findbyId(id: number): Promise<Users> {
-    const data = await this.usersModel.findByPk(id);
+    const data = await this.users.findByPk(id);
 
     if (!data) {
       throw new HttpException(
@@ -100,7 +101,7 @@ export class UsersService {
    * @returns Pengguna yang ditemukan.
    */
   async findbyEmail(email: string): Promise<Users> {
-    return this.usersModel.findOne({
+    return this.users.findOne({
       where: {
         email,
       },
@@ -113,9 +114,38 @@ export class UsersService {
    * @returns Pengguna yang ditambahkan.
    */
   async add(payload: Partial<Users>): Promise<Users> {
-    const { email, password, role_id } = payload;
+    const errorField: Record<string, string> = {};
 
-    const existingEmail = await this.findbyEmail(email);
+    if (!payload.name) {
+      errorField['name'] = 'Nama pengguna harus diisi';
+    }
+
+    if (!payload.email) {
+      errorField['email'] = 'Email pengguna harus diisi';
+    }
+
+    if (!payload.password) {
+      errorField['password'] = 'Password pengguna harus diisi';
+    }
+
+    if (!payload.role_id) {
+      errorField['role_id'] = 'Peran pengguna harus diisi';
+    }
+
+    if (Object.keys(errorField).length > 0) {
+      throw new HttpException(
+        {
+          status_code: 400,
+          message: 'Data tidak lengkap',
+          detail: null,
+          field: errorField,
+          help: null,
+        } as IErrorResponse,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const existingEmail = await this.findbyEmail(payload.email);
 
     if (existingEmail) {
       throw new HttpException(
@@ -124,7 +154,7 @@ export class UsersService {
           message: 'Email sudah pernah digunakan',
           detail: null,
           field: null,
-          help: null,
+          help: 'gunakan email yang berbeda',
         } as IErrorResponse,
         HttpStatus.CONFLICT,
       );
@@ -133,28 +163,32 @@ export class UsersService {
     //hash password
     const salt = await bcrypt.genSalt();
 
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(payload.password, salt);
 
     // mengecek apakah peran yang diinput ada
-    const existingPeran = await this.roleModel.findByPk(role_id);
+    const existingPeran = await this.role.findByPk(payload.role_id);
 
     if (!existingPeran) {
       throw new HttpException(
         {
           status_code: 400,
-          message: 'Peran tidak valid',
+          message: 'Peran yang dipilih tidak ada di sistem',
           detail: null,
           field: null,
-          help: null,
+          help: 'Pastikan peran yang kamu gunakan tersedia',
         } as IErrorResponse,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    return this.usersModel.create({
-      ...payload,
+    const newUser: Partial<Users> = {
+      name: payload.name,
+      email: payload.email,
       password: hashedPassword,
-    });
+      role_id: payload.role_id,
+    };
+
+    return this.users.create(newUser);
   }
 
   /**
@@ -163,7 +197,7 @@ export class UsersService {
    * @returns Pengguna yang telah dihapus.
    */
   async delete(id: number): Promise<Users> {
-    const existingUsername = await this.usersModel.findByPk(id);
+    const existingUsername = await this.users.findByPk(id);
 
     if (!existingUsername) {
       throw new HttpException(
@@ -178,7 +212,7 @@ export class UsersService {
       );
     }
 
-    await this.usersModel.destroy({
+    await this.users.destroy({
       where: {
         id,
       },

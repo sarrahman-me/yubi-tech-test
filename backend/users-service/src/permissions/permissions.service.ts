@@ -12,9 +12,9 @@ import { ListPermissions } from 'src/list-permissions/list_permissions.model';
 export class PermissionsService {
   constructor(
     @InjectModel(Permissions)
-    private permissionsModel: typeof Permissions,
+    private permissions: typeof Permissions,
 
-    @InjectModel(Permissions)
+    @InjectModel(ListPermissions)
     private listPermissions: typeof ListPermissions,
   ) {}
 
@@ -46,14 +46,15 @@ export class PermissionsService {
       };
     }
 
-    const { count, rows } = await this.permissionsModel.findAndCountAll({
+    const { count, rows } = await this.permissions.findAndCountAll({
       offset,
       limit,
       where: whereClause,
-      include: {
-        model: ListPermissions,
-      },
-      distinct: true,
+      // include: {
+      //   model: ListPermissions,
+      //   as: 'list_permissions',
+      // },
+      // distinct: true,
     });
 
     const totalData = count;
@@ -76,7 +77,7 @@ export class PermissionsService {
    * @returns izin yang sesuai dengan id
    */
   async find(id: number): Promise<Permissions> {
-    const data = await this.permissionsModel.findByPk(id);
+    const data = await this.permissions.findByPk(id);
 
     if (!data) {
       throw new HttpException(
@@ -102,8 +103,8 @@ export class PermissionsService {
   async add(payload: Partial<Permissions>): Promise<Permissions> {
     const errorField: Record<string, string> = {};
 
-    if (!payload.nama) {
-      errorField['nama'] = 'Nama izin harus diisi';
+    if (!payload.name) {
+      errorField['name'] = 'Nama izin harus diisi';
     }
 
     if (Object.keys(errorField).length > 0) {
@@ -119,9 +120,9 @@ export class PermissionsService {
       );
     }
 
-    const existingData = await this.permissionsModel.findOne({
+    const existingData = await this.permissions.findOne({
       where: {
-        nama: payload.nama,
+        name: payload.name,
       },
     });
 
@@ -134,11 +135,11 @@ export class PermissionsService {
           field: errorField,
           help: 'Gunakan nama izin yang berbeda',
         } as IErrorResponse,
-        HttpStatus.BAD_REQUEST,
+        HttpStatus.CONFLICT,
       );
     }
 
-    return this.permissionsModel.create(payload);
+    return this.permissions.create(payload);
   }
 
   /**
@@ -147,7 +148,7 @@ export class PermissionsService {
    * @returns data izin baru dihapus
    */
   async delete(id: number): Promise<Permissions> {
-    const existingData = await this.permissionsModel.findByPk(id);
+    const existingData = await this.permissions.findByPk(id);
 
     if (!existingData) {
       throw new HttpException(
@@ -156,32 +157,32 @@ export class PermissionsService {
           message: 'Izin tidak ditemukan',
           detail: null,
           field: null,
-          help: null,
+          help: 'pastikan izin yang ingin kamu hapus ada di sistem',
         } as IErrorResponse,
         HttpStatus.BAD_REQUEST,
       );
     }
 
-    const izinUsage = await this.listPermissions.findOne({
+    const permissionUsage = await this.listPermissions.findOne({
       where: {
-        id,
+        permissions_id: id,
       },
     });
 
-    if (izinUsage) {
+    if (permissionUsage) {
       throw new HttpException(
         {
           status_code: 406,
           message: 'Izin ini digunakan oleh peran tertentu',
           detail: null,
           field: null,
-          help: 'Hapus izin ini dari semua peran sebelum menghapus',
+          help: 'Hapus izin ini dari semua peran yang menggunakannya',
         } as IErrorResponse,
         HttpStatus.NOT_ACCEPTABLE,
       );
     }
 
-    await this.permissionsModel.destroy({
+    await this.permissions.destroy({
       where: {
         id,
       },
