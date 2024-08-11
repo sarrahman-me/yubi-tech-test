@@ -106,4 +106,23 @@ export class CustomerService {
       },
     };
   }
+
+  async find(id: number): Promise<Customers> {
+    const data = await this.customer.findByPk(id);
+
+    if (!data) {
+      throw new HttpException(
+        {
+          status_code: 400,
+          message: 'Data Customer tidak ditemukan',
+          detail: null,
+          field: null,
+          help: null,
+        } as IErrorResponse,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return data;
+  }
 }

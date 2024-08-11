@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpException,
+  Param,
   Post,
   Query,
 } from '@nestjs/common';
@@ -57,6 +58,29 @@ export class CustomersController {
       return {
         data,
         metadata,
+        error: null,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          data: null,
+          metadata: null,
+          error: error.response || error.message,
+        } as IResponseType<undefined>,
+        error.response.status_code || 500,
+      );
+    }
+  }
+
+  @Get('/:id')
+  @HttpCode(200)
+  async findById(@Param('id') id: number): Promise<IResponseType<Customers>> {
+    try {
+      const data = await this.customerService.find(id);
+
+      return {
+        data,
+        metadata: null,
         error: null,
       };
     } catch (error) {
