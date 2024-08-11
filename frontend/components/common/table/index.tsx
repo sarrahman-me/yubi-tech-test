@@ -26,7 +26,7 @@ const Table = ({ datas = [], columns }: TableProps) => {
             {columns.map((column, i) => (
               <th
                 key={i}
-                className="text-left bg-secondary text-secondary-medium/60 first-letter:uppercase border rounded p-2 text-nowrap text-base font-medium"
+                className="text-left bg-secondary text-secondary-medium/70 first-letter:uppercase border rounded p-2 text-nowrap text-base font-medium"
               >
                 {column.label}
               </th>
@@ -38,13 +38,13 @@ const Table = ({ datas = [], columns }: TableProps) => {
 
         <tbody className="bg-white">
           {datas.map((data, i) => (
-            <tr key={i} className="bg-white hover:bg-secondary">
+            <tr key={i} className="bg-white hover:bg-secondary/50">
               {columns.map((column, j) => (
                 <td
                   key={j}
                   className={`${
                     alignClassName[column.align || "left"]
-                  } border-b text-base p-2 whitespace-nowrap text-secondary-medium`}
+                  } border-b text-base p-2 whitespace-nowrap text-secondary-medium/90`}
                 >
                   {column.renderCell(data)}
                 </td>

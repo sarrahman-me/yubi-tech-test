@@ -1,14 +1,31 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import { usePathname, useRouter } from "next/navigation";
 import logo from "@/public/images/logo.png";
 import { sidebar_navigation } from "@/data/sidebar_navigation";
-import { isActivePage } from "@/utils/isActivePage";
 import { LogoutButton } from "@/components/spesific";
+import { NavList, NavListDropdown } from "@/components/common";
+import { useEffect, useState } from "react";
+import { GetDataApi } from "@/utils/fetcher";
+import { IUser } from "@/interfaces/user";
 
 const Sidebar = () => {
-  const router = useRouter();
-  const pathname = usePathname();
+  const [user_permission, setPermission] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await GetDataApi("/api/auth/profile");
+
+      const users: IUser = response.data.data;
+
+      const permissions = users.role.list_permissions.map(
+        (p) => p.permissions_name
+      );
+
+      setPermission(permissions);
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <aside className="space-y-10 select-none">
@@ -28,29 +45,30 @@ const Sidebar = () => {
 
       {/* navigation */}
       <div className="space-y-3">
-        {sidebar_navigation.map((item, i) => {
-          const isActive = isActivePage(item.href, pathname);
-          return (
-            <div
+        {sidebar_navigation.map((item, i) =>
+          item.type === "list" ? (
+            <NavList
               key={i}
-              onClick={() => router.push(item.href)}
-              className={`flex items-center space-x-3 p-2 rounded text-secondary-medium/80 cursor-pointer select-none ${
-                isActive
-                  ? "bg-primary-600 border text-white font-medium shadow-sm"
-                  : "hover:bg-primary-50"
-              }`}
-            >
-              <span
-                className={`text-lg ${
-                  isActive ? "text-white" : "text-primary-600"
-                }`}
-              >
-                {item.icon}
-              </span>
-              <p className="lg:block hidden">{item.title}</p>
-            </div>
-          );
-        })}
+              title={item.title}
+              icon={item.icon}
+              href={item.href || ""}
+              allow_permission={item.permissions.some((permission) =>
+                user_permission.includes(permission)
+              )}
+            />
+          ) : (
+            <NavListDropdown
+              key={i}
+              title={item.title}
+              user_permission={user_permission}
+              icon={item.icon}
+              subList={item.subList || []}
+              allow_permission={item.permissions.some((permission) =>
+                user_permission.includes(permission)
+              )}
+            />
+          )
+        )}
         <hr />
         <LogoutButton />
       </div>

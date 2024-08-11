@@ -27,7 +27,7 @@ export function DataTable({ datas, columns, pathForm, metadata }: IDataTable) {
   );
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {/* pencarian dan tombol tambah */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">

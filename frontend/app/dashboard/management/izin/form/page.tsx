@@ -15,17 +15,16 @@ export default function FormPage() {
   const [loading, setLoading] = useState<boolean>(false);
   const [payload, setPayload] = useState({
     name: "",
-    phone: "",
   });
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    const response = await PostDataApi(`/api/customers`, payload);
+    const response = await PostDataApi(`/api/permissions`, payload);
 
     if (response.status === 201) {
-      Notify.success("Berhasil menambahkan pelanggan");
+      Notify.success("Berhasi membuat izin");
       router.back();
     } else {
       setErrorField(response.data.error?.field || null);
@@ -40,22 +39,15 @@ export default function FormPage() {
 
   return (
     <div className="space-y-5">
-      <AppBar buttonBack title="Pelanggan Baru" />
+      <AppBar buttonBack title="Izin Baru" />
 
       {/* form */}
       <form onSubmit={handleSubmit} className="space-y-5 w-full md:w-1/2">
         <Textfield
-          label="Nama Pelanggan"
+          label="Nama Izin"
           name="name"
           setValue={(e) => setPayload({ ...payload, name: e })}
           errorMessage={errorField?.name}
-        />
-        <Textfield
-          type="tel"
-          label="Nomor Telpon"
-          name="phone"
-          setValue={(e) => setPayload({ ...payload, phone: e })}
-          errorMessage={errorField?.phone}
         />
         <Button loading={loading} type="submit">
           Simpan

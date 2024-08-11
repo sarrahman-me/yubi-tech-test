@@ -8,6 +8,7 @@ import {
   IErrorResponse,
   IMetadata,
 } from 'src/interfaces/responseType.interface';
+import { ListPermissions } from 'src/list-permissions/list_permissions.model';
 
 @Injectable()
 export class UsersService {
@@ -77,7 +78,20 @@ export class UsersService {
    * @returns Pengguna yang ditemukan.
    */
   async findbyId(id: number): Promise<Users> {
-    const data = await this.users.findByPk(id);
+    const data = await this.users.findByPk(id, {
+      include: [
+        {
+          model: Role,
+          as: 'role',
+          include: [
+            {
+              model: ListPermissions,
+              as: 'list_permissions',
+            },
+          ],
+        },
+      ],
+    });
 
     if (!data) {
       throw new HttpException(
