@@ -1,11 +1,11 @@
 "use client";
 import { AppBar, DataTable } from "@/components/layouts";
-import { ICustomers } from "@/interfaces/customers";
+import { IPermissions } from "@/interfaces/permissions";
 import { GetDataApi } from "@/utils/fetcher";
 import { useEffect, useState } from "react";
 
 export default function Page() {
-  const [pelanggan, setPelanggan] = useState<ICustomers[]>([]);
+  const [pelanggan, setPelanggan] = useState<IPermissions[]>([]);
   const [metadata, setMetada] = useState({} as any);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function Page() {
         columns={[
           {
             label: "Nama Izin",
-            renderCell: (item: ICustomers) => item.name,
+            renderCell: (item: IPermissions) => item.name,
           },
         ]}
       />

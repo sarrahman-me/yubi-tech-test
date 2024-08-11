@@ -154,7 +154,9 @@ export class RoleService {
           status_code: 409,
           message: 'Data peran sudah ada',
           detail: null,
-          field: errorField,
+          field: {
+            name: 'Gunakan nama peran yang berbeda',
+          },
           help: null,
         } as IErrorResponse,
         HttpStatus.CONFLICT,

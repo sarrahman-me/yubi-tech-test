@@ -27,13 +27,8 @@ export const sidebar_navigation: IMenuItem[] = [
     permissions: ["Administrator"],
     subList: [
       {
-        title: "Semua Produk",
-        href: "/dashboard/produk",
-        permissions: ["Administrator", "View Products"],
-      },
-      {
-        title: "Gaya",
-        href: "/dashboard/produk/gaya",
+        title: "Style",
+        href: "/dashboard/produk/style",
         permissions: ["Administrator", "View Style"],
       },
       {
@@ -42,7 +37,7 @@ export const sidebar_navigation: IMenuItem[] = [
         permissions: ["Administrator", "View Color Method"],
       },
       {
-        title: "Nama Warna",
+        title: "Warna",
         href: "/dashboard/produk/warna",
         permissions: ["Administrator", "View Warna"],
       },

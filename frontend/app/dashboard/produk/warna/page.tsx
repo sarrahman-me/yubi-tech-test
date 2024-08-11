@@ -3,7 +3,7 @@ import { AppBar } from "@/components/layouts";
 export default function Page() {
   return (
     <div>
-      <AppBar title="Nama Warna" />
+      <AppBar title="Daftar Warna" />
     </div>
   );
 }

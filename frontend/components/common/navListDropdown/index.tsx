@@ -34,7 +34,7 @@ export default function NavListDropdown({
         title={title}
         className={`${
           allow_permission ? "flex" : "hidden"
-        } flex items-center space-x-3 p-2 rounded text-secondary-medium/80 cursor-pointer select-none hover:bg-primary-50`}
+        } flex items-center justify-between space-x-3 p-2 rounded text-secondary-medium/80 cursor-pointer select-none hover:bg-primary-50`}
         onClick={() => setOpen(!open)}
       >
         <span className="flex items-center space-x-2">
