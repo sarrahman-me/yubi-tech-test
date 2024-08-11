@@ -40,9 +40,9 @@ export class RoleController {
         {
           data: null,
           metadata: null,
-          error: error.response,
-        } as IResponseType<Permissions>,
-        error.response.status_code,
+          error: error.response || error.message,
+        } as IResponseType<undefined>,
+        error.response.status_code || 500,
       );
     }
   }
@@ -62,9 +62,9 @@ export class RoleController {
         {
           data: null,
           metadata: null,
-          error: error.response,
-        } as IResponseType<Permissions>,
-        error.response.status_code,
+          error: error.response || error.message,
+        } as IResponseType<undefined>,
+        error.response.status_code || 500,
       );
     }
   }
@@ -86,9 +86,9 @@ export class RoleController {
         {
           data: null,
           metadata: null,
-          error: error.response,
-        } as IResponseType<Permissions>,
-        error.response.status_code,
+          error: error.response || error.message,
+        } as IResponseType<undefined>,
+        error.response.status_code || 500,
       );
     }
   }
@@ -115,9 +115,9 @@ export class RoleController {
         {
           data: null,
           metadata: null,
-          error: error.response,
-        } as IResponseType<Permissions>,
-        error.response.status_code,
+          error: error.response || error.message,
+        } as IResponseType<undefined>,
+        error.response.status_code || 500,
       );
     }
   }
@@ -125,15 +125,22 @@ export class RoleController {
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<IResponseType<Role>> {
     try {
-      const peran = await this.peranService.delete(id);
+      const role = await this.peranService.delete(id);
 
       return {
-        data: peran,
+        data: role,
         metadata: null,
         error: null,
       };
     } catch (error) {
-      throw error;
+      throw new HttpException(
+        {
+          data: null,
+          metadata: null,
+          error: error.response || error.message,
+        } as IResponseType<undefined>,
+        error.response.status_code || 500,
+      );
     }
   }
 }

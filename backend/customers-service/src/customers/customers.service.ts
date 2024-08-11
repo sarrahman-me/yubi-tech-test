@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Customers } from './customers.model';
-import { IErrorResponse } from 'src/interfaces/responseType.interface';
+import {
+  IErrorResponse,
+  IMetadata,
+} from 'src/interfaces/responseType.interface';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class CustomerService {
@@ -13,11 +17,11 @@ export class CustomerService {
     const errorField: Record<string, string> = {};
 
     if (!payload.name) {
-      errorField['name'] = 'Nama harus diisi';
+      errorField['name'] = 'Nama pelanggan harus diisi';
     }
 
     if (!payload.phone) {
-      errorField['phone'] = 'Phone harus diisi';
+      errorField['phone'] = 'Nomor handphone harus diisi';
     }
 
     if (Object.keys(errorField).length > 0) {
@@ -46,12 +50,60 @@ export class CustomerService {
           message: 'Data customer sudah ada',
           detail: null,
           field: null,
-          help: null,
+          help: 'Gunakan nomor handphone yang berbeda',
         } as IErrorResponse,
         HttpStatus.CONFLICT,
       );
     }
 
-    return this.customer.create({ name: payload.name, phone: payload.phone });
+    return this.customer.create(payload);
+  }
+
+  /**
+   * mendapatkan semua data customer dengan pagination dan pencarian jika ditentukan
+   * @param page
+   * @param limit
+   * @param search opsional
+   * @returns customers dalam array
+   */
+  async findAll({
+    page,
+    limit,
+    search,
+  }: {
+    page: number;
+    limit: number;
+    search?: string;
+  }): Promise<{
+    data: Customers[];
+    metadata: IMetadata;
+  }> {
+    const offset = (page - 1) * limit;
+    let whereClause = {};
+
+    if (search) {
+      whereClause = {
+        [Op.or]: [{ nama: { [Op.like]: `%${search}%` } }],
+      };
+    }
+
+    const { count, rows } = await this.customer.findAndCountAll({
+      offset,
+      limit,
+      where: whereClause,
+    });
+
+    const totalData = count;
+    const totalPages = Math.ceil(totalData / limit);
+
+    return {
+      data: rows,
+      metadata: {
+        limit,
+        page,
+        totalData,
+        totalPages,
+      },
+    };
   }
 }

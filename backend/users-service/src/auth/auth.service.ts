@@ -63,6 +63,7 @@ export class AuthService {
       const role = await this.roleService.find(user.role_id);
 
       const payload: IJwtPayload = {
+        id: user.id,
         email: user.email,
         role_id: user.role_id,
         list_permissions: role.list_permissions.map((a) => a.permissions_name),

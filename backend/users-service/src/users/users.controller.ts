@@ -41,9 +41,9 @@ export class UsersController {
         {
           data: null,
           metadata: null,
-          error: error.response,
-        } as IResponseType<Permissions>,
-        error.response.status_code,
+          error: error.response || error.message,
+        } as IResponseType<undefined>,
+        error.response.status_code || 500,
       );
     }
   }
@@ -64,9 +64,9 @@ export class UsersController {
         {
           data: null,
           metadata: null,
-          error: error.response,
-        } as IResponseType<Permissions>,
-        error.response.status_code,
+          error: error.response || error.message,
+        } as IResponseType<undefined>,
+        error.response.status_code || 500,
       );
     }
   }
@@ -87,9 +87,9 @@ export class UsersController {
         {
           data: null,
           metadata: null,
-          error: error.response,
-        } as IResponseType<Permissions>,
-        error.response.status_code,
+          error: error.response || error.message,
+        } as IResponseType<undefined>,
+        error.response.status_code || 500,
       );
     }
   }
@@ -110,9 +110,9 @@ export class UsersController {
         {
           data: null,
           metadata: null,
-          error: error.response,
-        } as IResponseType<Permissions>,
-        error.response.status_code,
+          error: error.response || error.message,
+        } as IResponseType<undefined>,
+        error.response.status_code || 500,
       );
     }
   }
