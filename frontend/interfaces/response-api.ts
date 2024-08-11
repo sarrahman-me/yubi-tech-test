@@ -9,12 +9,12 @@ export interface IErrorResponse {
 export interface IMetadata {
   page: number;
   limit: number;
-  total_data: number;
-  total_pages: number;
+  totalData: number;
+  totalPages: number;
 }
 
-export interface IResponseType<T> {
-  data?: T;
+export interface IResponseType {
+  data?: any;
   metadata?: IMetadata;
   error?: IErrorResponse;
 }

@@ -3,7 +3,7 @@ import { IResponseType } from "@/interfaces/response-api";
 export async function GetDataApi(
   url: string,
   token?: string
-): Promise<{ status: number; data: IResponseType<any> }> {
+): Promise<{ status: number; data: IResponseType }> {
   try {
     const response = await fetch(url, {
       headers: {
@@ -24,8 +24,8 @@ export async function GetDataApi(
         metadata: {
           page: 0,
           limit: 0,
-          total_data: 0,
-          total_pages: 0,
+          totalData: 0,
+          totalPages: 0,
         },
         error: {
           status_code: 500,
@@ -40,7 +40,7 @@ export async function PostDataApi(
   url: string,
   payload: any,
   token?: string
-): Promise<{ status: number; data: IResponseType<any> }> {
+): Promise<{ status: number; data: IResponseType }> {
   try {
     const response = await fetch(url, {
       method: "POST",
@@ -62,8 +62,8 @@ export async function PostDataApi(
         metadata: {
           page: 0,
           limit: 0,
-          total_data: 0,
-          total_pages: 0,
+          totalData: 0,
+          totalPages: 0,
         },
         error: {
           status_code: 500,
@@ -78,7 +78,7 @@ export async function PatchDataApi(
   url: string,
   payload: any,
   token?: string
-): Promise<{ status: number; data: IResponseType<any> }> {
+): Promise<{ status: number; data: IResponseType }> {
   try {
     const response = await fetch(url, {
       method: "PATCH",
@@ -100,8 +100,8 @@ export async function PatchDataApi(
         metadata: {
           page: 0,
           limit: 0,
-          total_data: 0,
-          total_pages: 0,
+          totalData: 0,
+          totalPages: 0,
         },
         error: {
           status_code: 500,
@@ -116,7 +116,7 @@ export async function DeleteDataApi(
   url: string,
   token?: string,
   payload?: any
-): Promise<{ status: number; data: IResponseType<any> }> {
+): Promise<{ status: number; data: IResponseType }> {
   try {
     const response = await fetch(url, {
       method: "DELETE",
@@ -138,8 +138,8 @@ export async function DeleteDataApi(
         metadata: {
           page: 0,
           limit: 0,
-          total_data: 0,
-          total_pages: 0,
+          totalData: 0,
+          totalPages: 0,
         },
         error: {
           status_code: 500,

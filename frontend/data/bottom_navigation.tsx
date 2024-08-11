@@ -12,9 +12,9 @@ export const bottom_navigation: IMenuItem[] = [
     href: "/dashboard",
   },
   {
-    title: "Barang",
+    title: "Produk",
     icon: <BsBoxSeam />,
-    href: "/dashboard/barang",
+    href: "/dashboard/produk",
   },
   {
     title: "Pesanan",

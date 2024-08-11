@@ -17,9 +17,9 @@ export const sidebar_navigation: IMenuItem[] = [
     href: "/dashboard/pesanan",
   },
   {
-    title: "Barang",
+    title: "Produk",
     icon: <BsBoxSeam />,
-    href: "/dashboard/barang",
+    href: "/dashboard/produk",
   },
   {
     title: "Pelanggan",

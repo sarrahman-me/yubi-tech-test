@@ -8,14 +8,14 @@ const BottomBar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="bg-secondary grid grid-cols-5 p-1 rounded-md shadow-lg select-none">
+    <aside className="bg-secondary grid grid-cols-5 p-1 rounded shadow-lg select-none">
       {bottom_navigation.map((item, i) => {
         const isActive = isActivePage(item.href, pathname);
         return (
           <div
             key={i}
             onClick={() => router.push(item.href)}
-            className={`flex flex-col justify-center items-center p-1 rounded-md ${
+            className={`flex flex-col justify-center items-center p-1 rounded ${
               isActive ? "border bg-primary-600 text-white" : "text-primary-600"
             }`}
           >

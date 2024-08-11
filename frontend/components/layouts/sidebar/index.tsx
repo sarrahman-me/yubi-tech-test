@@ -34,7 +34,7 @@ const Sidebar = () => {
             <div
               key={i}
               onClick={() => router.push(item.href)}
-              className={`flex items-center space-x-3 p-2 rounded-md text-secondary-medium cursor-pointer select-none ${
+              className={`flex items-center space-x-3 p-2 rounded text-secondary-medium/80 cursor-pointer select-none ${
                 isActive
                   ? "bg-primary-600 border text-white font-medium shadow-sm"
                   : "hover:bg-primary-50"

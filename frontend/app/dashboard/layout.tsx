@@ -22,7 +22,7 @@ export default async function DashboardLayout({
       </div>
 
       {/* main dashboard */}
-      <main className="bg-white p-2 lg:p-5 md:shadow md:border-secondary-medium/10 md:rounded min-h-screen ml-0 md:ml-14 lg:ml-72">
+      <main className="bg-white p-2 lg:p-5 md:border md:rounded min-h-screen ml-0 md:ml-14 lg:ml-72">
         {children}
       </main>
 

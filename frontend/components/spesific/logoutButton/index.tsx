@@ -31,7 +31,7 @@ export default function LogoutButton() {
       {
         titleColor: "#0284c7",
         okButtonBackground: "#0284c7",
-        borderRadius: "6px",
+        borderRadius: "4px",
       }
     );
   };
@@ -39,7 +39,7 @@ export default function LogoutButton() {
   return (
     <span
       onClick={handleLogout}
-      className="flex items-center p-2 rounded-md text-red-600 cursor-pointer hover:bg-red-50"
+      className="flex items-center p-2 rounded text-red-600 cursor-pointer hover:bg-red-50"
     >
       <CiLogout className="mr-2 text-lg" />
       Keluar
