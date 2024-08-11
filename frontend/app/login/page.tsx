@@ -26,13 +26,18 @@ export default function LoginPage() {
 
     const response = await PostDataApi(`/api/auth/login`, payload);
 
-    if (response.status === 200) {
-      Notify.success("Login berhasil");
+    if (response.status === 201) {
+      Notify.success("Login berhasil", {
+        position: "center-top",
+      });
       router.push("/dashboard");
     } else {
       setErrorField(response.data.error?.field || null);
       Notify.failure(
-        response.data.error?.message || "Terjadi kesalahan saat login"
+        response.data.error?.message || "Terjadi kesalahan saat login",
+        {
+          position: "center-top",
+        }
       );
     }
 
@@ -53,14 +58,17 @@ export default function LoginPage() {
               src={logo}
               alt="logo"
             />
-            <p className="font-bold text-lg md:text-xl text-primary-600">
+            <p className="font-extrabold text-lg md:text-xl text-primary-600">
               Yubi Technology
             </p>
           </div>
         </div>
 
         <div className="flex justify-center xl:justify-end items-center">
-          <form className="bg-white sm:p-5 py-7 w-full max-w-xl space-y-5">
+          <form
+            onSubmit={handleLogin}
+            className="bg-white sm:p-5 py-7 w-full max-w-xl space-y-5"
+          >
             <h2 className="text-secondary-medium font-semibold text-2xl">
               Login
             </h2>
@@ -71,6 +79,7 @@ export default function LoginPage() {
               setValue={(e) => setPayload({ ...payload, email: e })}
               placeholder="Email Kamu"
               type="email"
+              errorMessage={errorField?.email}
             />
             <Textfield
               label="Password"
@@ -78,8 +87,10 @@ export default function LoginPage() {
               setValue={(e) => setPayload({ ...payload, password: e })}
               placeholder="Kata Sandi"
               type="password"
+              errorMessage={errorField?.password}
             />
             <Button
+              loading={loading}
               disabled={!payload.email || !payload.password}
               fullWidth
               type="submit"

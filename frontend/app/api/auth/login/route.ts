@@ -7,11 +7,11 @@ export async function POST(request: Request) {
 
   try {
     const res = await PostDataApi(
-      `${process.env.NEXT_PUBLIC_HOST}/users/login`,
+      `${process.env.NEXT_PUBLIC_HOST}/users/auth/login`,
       payload
     );
 
-    if (res.status !== 200) {
+    if (res.status !== 201) {
       return Response.json(res.data, { status: res.status });
     }
 
