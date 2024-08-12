@@ -6,6 +6,7 @@ import NavListDropdown from "./navListDropdown";
 import Pagination from "./pagination";
 import Select from "./select";
 import Table from "./table";
+import Textarea from "./textarea";
 import Textfield from "./textfield";
 
 export {
@@ -17,5 +18,6 @@ export {
   NavList,
   NavListDropdown,
   CheckboxGroup,
+  Textarea,
   Select,
 };

@@ -26,7 +26,7 @@ export default function Page() {
       <Suspense fallback={<div>Loading...</div>}>
         <DataTable
           metadata={metadata}
-          pathForm="/dashboard/management/style/form"
+          pathForm="/dashboard/produk/style/form"
           datas={data}
           columns={[
             {
