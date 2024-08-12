@@ -37,6 +37,18 @@ services:
     environment:
       - POSTGRES_HOST=postgres
 
+  order-service:
+    build:
+      context: ../order-service
+      dockerfile: Dockerfile
+    container_name: order-service
+    networks:
+      - yubitech-network
+    depends_on:
+      - postgres
+    environment:
+      - POSTGRES_HOST=postgres
+
   postgres:
     image: postgres
     ports:

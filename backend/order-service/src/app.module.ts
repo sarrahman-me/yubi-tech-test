@@ -3,6 +3,12 @@ import { ConfigModule } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
+import { Style } from './style/style.model';
+import { StyleModule } from './style/style.module';
+import { ColorMethod } from './colorMethod/colorMethod.model';
+import { ColorMethodModule } from './colorMethod/colorMethod.module';
+import { Color } from './color/color.model';
+import { ColorModule } from './color/color.module';
 
 @Module({
   imports: [
@@ -21,7 +27,7 @@ import { APP_GUARD } from '@nestjs/core';
       username: 'postgres',
       password: process.env.POSTGRES_PASSWORD,
       database: 'yubitech',
-      models: [],
+      models: [Style, ColorMethod, Color],
       autoLoadModels: true,
     }),
 
@@ -38,6 +44,9 @@ import { APP_GUARD } from '@nestjs/core';
     /**
      * module lainnya
      */
+    StyleModule,
+    ColorMethodModule,
+    ColorModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
