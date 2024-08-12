@@ -14,7 +14,10 @@ async function bootstrap() {
    * setting cors
    */
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: [
+      'http://localhost:3000',
+      'https://main.d119vpe6jp51oh.amplifyapp.com/login',
+    ],
     credentials: true,
   });
 

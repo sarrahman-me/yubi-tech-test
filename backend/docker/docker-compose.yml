@@ -10,6 +10,7 @@ services:
     depends_on:
       - users-service
       - customers-service
+      - order-service
     networks:
       - yubitech-network
 
