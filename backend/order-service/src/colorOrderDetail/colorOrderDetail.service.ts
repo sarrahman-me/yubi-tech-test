@@ -1,19 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { OnEvent } from '@nestjs/event-emitter';
-import { StyleOrder } from 'src/styleOrder/styleOrder.model';
+import { ColorOrderDetail } from './colorOrderDetail.model';
 
 @Injectable()
 export class ColorOrderDetailService {
   constructor(
-    @InjectModel(StyleOrder)
-    private styleOrderModel: typeof StyleOrder,
+    @InjectModel(ColorOrderDetail)
+    private colorOrderDetail: typeof ColorOrderDetail,
   ) {}
 
-  /**
-   * Menambahkan data baru melalui event Emitter
-   * @param data
-   */
-  @OnEvent('add.color-order-detail')
-  async addStyleOrderDetail(): Promise<void> {}
+  async create(payload: Partial<ColorOrderDetail>): Promise<ColorOrderDetail> {
+    return this.colorOrderDetail.create(payload);
+  }
 }

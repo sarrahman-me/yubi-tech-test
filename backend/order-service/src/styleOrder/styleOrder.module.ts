@@ -7,5 +7,6 @@ import { StyleOrderService } from './styleOrder.service';
 @Module({
   imports: [SequelizeModule.forFeature([StyleOrder, Style])],
   providers: [StyleOrderService],
+  exports: [StyleOrderService],
 })
 export class StyleOrderModule {}

@@ -11,6 +11,7 @@ import {
 import { IResponseType } from 'src/interfaces/responseType.interface';
 import { SalesOrder } from './salesOrder.model';
 import { SalesOrderService } from './salesOrder.service';
+import { IPayloadPesanan } from 'src/interfaces/payload_pesanan';
 
 @Controller('sales-order')
 export class SalesOrderController {
@@ -19,7 +20,7 @@ export class SalesOrderController {
   @HttpCode(201)
   @Post()
   async add(
-    @Body() payload: Partial<SalesOrder>,
+    @Body() payload: IPayloadPesanan,
   ): Promise<IResponseType<SalesOrder>> {
     try {
       const data = await this.salesOrderService.create(payload);

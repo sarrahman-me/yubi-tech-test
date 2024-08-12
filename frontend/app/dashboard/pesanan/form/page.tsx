@@ -2,7 +2,10 @@
 import { useState, FormEvent } from "react";
 import { Select, Textfield } from "@/components/common";
 import { AppBar } from "@/components/layouts";
-import { GoTrash, GoPlus } from "react-icons/go";
+import { GoTrash } from "react-icons/go";
+import { Notify } from "notiflix";
+import { PostDataApi } from "@/utils/fetcher";
+import { useRouter } from "next/navigation";
 
 interface IColor {
   color_id: number;
@@ -25,6 +28,8 @@ export interface IPayloadPesanan {
 }
 
 export default function FormPage() {
+  const router = useRouter();
+
   const [customer_id, setCustomer] = useState<number | null>(null);
   const [styles, setStyles] = useState<IStyle[]>([]);
 
@@ -71,16 +76,23 @@ export default function FormPage() {
     setStyles(newStyles);
   };
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = async () => {
     const payload = {
       id_customer: customer_id,
       style: styles,
     };
 
-    console.log(payload);
-    // Lakukan pengiriman data payload ke API
+    const response = await PostDataApi(`/api/sales-order`, payload);
+
+    if (response.status === 201) {
+      Notify.success("Berhasil menambahkan pesanan");
+      router.back();
+    } else {
+      Notify.failure(
+        response.data.error?.message ||
+          "Terjadi kesalahan saat menambahkan pesanan"
+      );
+    }
   };
 
   return (
@@ -112,7 +124,7 @@ export default function FormPage() {
         Style Baru
       </button>
 
-      <div>
+      <div className="space-y-4">
         {styles.map((style, styleIndex) => (
           <div
             key={styleIndex}

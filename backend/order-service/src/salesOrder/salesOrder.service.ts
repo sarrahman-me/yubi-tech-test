@@ -6,18 +6,24 @@ import {
 } from 'src/interfaces/responseType.interface';
 import { Op } from 'sequelize';
 import { SalesOrder } from './salesOrder.model';
+import { IPayloadPesanan } from 'src/interfaces/payload_pesanan';
+import { StyleOrderService } from 'src/styleOrder/styleOrder.service';
+import { ColorOrderDetailService } from 'src/colorOrderDetail/colorOrderDetail.service';
 
 @Injectable()
 export class SalesOrderService {
   constructor(
     @InjectModel(SalesOrder)
     private readonly salesOrderModel: typeof SalesOrder,
+    private readonly styleOrderService: StyleOrderService,
+    private readonly colorOrderDetailService: ColorOrderDetailService,
   ) {}
 
-  async create(payload: Partial<SalesOrder>): Promise<SalesOrder> {
+  async create(payload: IPayloadPesanan): Promise<SalesOrder> {
     const errorField: Record<string, string> = {};
 
-    if (!payload.customer_id) {
+    // Validasi input
+    if (!payload.id_customer) {
       errorField['customer_id'] = 'Data pelanggan harus ada';
     }
 
@@ -34,7 +40,38 @@ export class SalesOrderService {
       );
     }
 
-    return this.salesOrderModel.create(payload);
+    const newSONumber = '00001';
+
+    const salesOrderPayload: Partial<SalesOrder> = {
+      so_number: newSONumber,
+      customer_id: payload.id_customer,
+    };
+
+    const newSalesOrder = await this.salesOrderModel.create(salesOrderPayload);
+
+    for (const style of payload.style) {
+      const payload_style_order = {
+        sales_order_id: newSalesOrder.id,
+        style_id: style.style_id,
+      };
+
+      const newStyleOrder =
+        await this.styleOrderService.create(payload_style_order);
+
+      for (const colorMethod of style.color_method) {
+        for (const color of colorMethod.color) {
+          const payload_color_order_detail = {
+            style_order_id: newStyleOrder.id,
+            color_method_id: colorMethod.color_method_id,
+            color_id: color.color_id,
+          };
+
+          await this.colorOrderDetailService.create(payload_color_order_detail);
+        }
+      }
+    }
+
+    return newSalesOrder;
   }
 
   /**

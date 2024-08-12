@@ -7,5 +7,6 @@ import { StyleOrder } from 'src/styleOrder/styleOrder.model';
 @Module({
   imports: [SequelizeModule.forFeature([ColorOrderDetail, StyleOrder])],
   providers: [ColorOrderDetailService],
+  exports: [ColorOrderDetailService],
 })
 export class ColorOrderDetailModule {}
