@@ -9,6 +9,12 @@ import { ColorMethod } from './colorMethod/colorMethod.model';
 import { ColorMethodModule } from './colorMethod/colorMethod.module';
 import { Color } from './color/color.model';
 import { ColorModule } from './color/color.module';
+import { SalesOrder } from './salesOrder/salesOrder.model';
+import { SalesOrderModule } from './salesOrder/salesOrder.module';
+import { StyleOrderModule } from './styleOrder/styleOrder.module';
+import { StyleOrder } from './styleOrder/styleOrder.model';
+import { ColorOrderDetailModule } from './colorOrderDetail/colorOrderDetail.module';
+import { ColorOrderDetail } from './colorOrderDetail/colorOrderDetail.model';
 
 @Module({
   imports: [
@@ -27,7 +33,14 @@ import { ColorModule } from './color/color.module';
       username: 'postgres',
       password: process.env.POSTGRES_PASSWORD,
       database: 'yubitech',
-      models: [Style, ColorMethod, Color],
+      models: [
+        Style,
+        ColorMethod,
+        Color,
+        SalesOrder,
+        StyleOrder,
+        ColorOrderDetail,
+      ],
       autoLoadModels: true,
     }),
 
@@ -47,6 +60,9 @@ import { ColorModule } from './color/color.module';
     StyleModule,
     ColorMethodModule,
     ColorModule,
+    SalesOrderModule,
+    StyleOrderModule,
+    ColorOrderDetailModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
