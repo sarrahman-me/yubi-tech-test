@@ -6,6 +6,7 @@ import {
 } from 'src/interfaces/responseType.interface';
 import { Op } from 'sequelize';
 import { ColorMethod } from './colorMethod.model';
+import { Color } from 'src/color/color.model';
 
 @Injectable()
 export class ColorMethodService {
@@ -89,6 +90,10 @@ export class ColorMethodService {
       offset,
       limit,
       where: whereClause,
+      include: {
+        model: Color,
+        as: 'color',
+      },
     });
 
     const totalData = count;
@@ -106,7 +111,12 @@ export class ColorMethodService {
   }
 
   async find(id: number): Promise<ColorMethod> {
-    const data = await this.colorMethod.findByPk(id);
+    const data = await this.colorMethod.findByPk(id, {
+      include: {
+        model: Color,
+        as: 'color',
+      },
+    });
 
     if (!data) {
       throw new HttpException(

@@ -12,7 +12,7 @@ import { IResponseType } from 'src/interfaces/responseType.interface';
 import { ColorMethodService } from './colorMethod.service';
 import { ColorMethod } from './colorMethod.model';
 
-@Controller()
+@Controller('color-method')
 export class ColorMethodController {
   constructor(private readonly colorMethodService: ColorMethodService) {}
 

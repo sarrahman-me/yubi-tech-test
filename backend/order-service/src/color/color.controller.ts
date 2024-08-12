@@ -12,7 +12,7 @@ import { IResponseType } from 'src/interfaces/responseType.interface';
 import { Color } from './color.model';
 import { ColorService } from './color.service';
 
-@Controller()
+@Controller('color')
 export class ColorController {
   constructor(private readonly colorService: ColorService) {}
 

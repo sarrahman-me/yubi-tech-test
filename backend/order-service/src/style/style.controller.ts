@@ -12,7 +12,7 @@ import { IResponseType } from 'src/interfaces/responseType.interface';
 import { StyleService } from './style.service';
 import { Style } from './style.model';
 
-@Controller()
+@Controller('style')
 export class StyleController {
   constructor(private readonly styleService: StyleService) {}
 

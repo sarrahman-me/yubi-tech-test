@@ -22,7 +22,7 @@ import { ColorModule } from './color/color.module';
      */
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: process.env.DB_HOST || 'localhost',
+      host: process.env.POSTGRES_HOST || 'localhost',
       port: 5432,
       username: 'postgres',
       password: process.env.POSTGRES_PASSWORD,
