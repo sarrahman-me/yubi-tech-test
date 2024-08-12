@@ -2,9 +2,11 @@ import {
   BelongsTo,
   Column,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
+import { ColorOrderDetail } from 'src/colorOrderDetail/colorOrderDetail.model';
 import { SalesOrder } from 'src/salesOrder/salesOrder.model';
 import { Style } from 'src/style/style.model';
 
@@ -24,4 +26,7 @@ export class StyleOrder extends Model<StyleOrder> {
 
   @BelongsTo(() => Style)
   style: Style;
+
+  @HasMany(() => ColorOrderDetail)
+  style_order: ColorOrderDetail[];
 }

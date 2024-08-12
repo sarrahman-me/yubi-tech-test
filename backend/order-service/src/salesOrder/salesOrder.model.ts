@@ -1,4 +1,5 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Column, HasMany, Model, Table } from 'sequelize-typescript';
+import { StyleOrder } from 'src/styleOrder/styleOrder.model';
 
 @Table
 export class SalesOrder extends Model<SalesOrder> {
@@ -7,4 +8,7 @@ export class SalesOrder extends Model<SalesOrder> {
 
   @Column
   so_number: string;
+
+  @HasMany(() => StyleOrder)
+  style_order: StyleOrder[];
 }

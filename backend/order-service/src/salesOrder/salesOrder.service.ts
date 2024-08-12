@@ -9,6 +9,8 @@ import { SalesOrder } from './salesOrder.model';
 import { IPayloadPesanan } from 'src/interfaces/payload_pesanan';
 import { StyleOrderService } from 'src/styleOrder/styleOrder.service';
 import { ColorOrderDetailService } from 'src/colorOrderDetail/colorOrderDetail.service';
+import { StyleOrder } from 'src/styleOrder/styleOrder.model';
+// import { ColorOrderDetail } from 'src/colorOrderDetail/colorOrderDetail.model';
 
 @Injectable()
 export class SalesOrderService {
@@ -40,7 +42,7 @@ export class SalesOrderService {
       );
     }
 
-    const newSONumber = '00001';
+    const newSONumber = this.generateSoNumber();
 
     const salesOrderPayload: Partial<SalesOrder> = {
       so_number: newSONumber,
@@ -74,6 +76,11 @@ export class SalesOrderService {
     return newSalesOrder;
   }
 
+  private generateSoNumber() {
+    const randomNum = Math.floor(Math.random() * 100000);
+    return `so-${randomNum.toString().padStart(5, '0')}`;
+  }
+
   /**
    * mendapatkan semua data sales order dengan pagination dan pencarian jika ditentukan
    * @param page
@@ -98,7 +105,7 @@ export class SalesOrderService {
 
     if (search) {
       whereClause = {
-        [Op.or]: [{ nama: { [Op.like]: `%${search}%` } }],
+        [Op.or]: [{ so_number: { [Op.like]: `%${search}%` } }],
       };
     }
 
@@ -106,6 +113,11 @@ export class SalesOrderService {
       offset,
       limit,
       where: whereClause,
+      include: {
+        model: StyleOrder,
+        as: 'style_order',
+      },
+      distinct: true,
     });
 
     const totalData = count;

@@ -94,6 +94,7 @@ export class ColorMethodService {
         model: Color,
         as: 'color',
       },
+      distinct: true,
     });
 
     const totalData = count;
