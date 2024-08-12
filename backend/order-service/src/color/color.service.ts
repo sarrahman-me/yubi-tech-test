@@ -6,10 +6,16 @@ import {
 } from 'src/interfaces/responseType.interface';
 import { Op } from 'sequelize';
 import { Color } from './color.model';
+import { ColorMethod } from 'src/colorMethod/colorMethod.model';
 
 @Injectable()
 export class ColorService {
-  constructor(@InjectModel(Color) private readonly colorModel: typeof Color) {}
+  constructor(
+    @InjectModel(Color) private readonly colorModel: typeof Color,
+
+    @InjectModel(ColorMethod)
+    private readonly colorMethodModel: typeof ColorMethod,
+  ) {}
 
   async add(payload: Partial<Color>): Promise<Color> {
     const errorField: Record<string, string> = {};
@@ -55,6 +61,25 @@ export class ColorService {
           help: 'Gunakan nama warna yang berbeda',
         } as IErrorResponse,
         HttpStatus.CONFLICT,
+      );
+    }
+
+    const existingColorMethod = await this.colorMethodModel.findByPk(
+      payload.color_method_id,
+    );
+
+    if (!existingColorMethod) {
+      throw new HttpException(
+        {
+          status_code: 400,
+          message: 'Metode pewarnaan tidak valid',
+          detail: null,
+          field: {
+            color_method_id: 'Metode pewarnaan tidak ada di sistem',
+          },
+          help: 'Tambahkan metode pewarnaan terlebih dahulu',
+        } as IErrorResponse,
+        HttpStatus.BAD_REQUEST,
       );
     }
 
