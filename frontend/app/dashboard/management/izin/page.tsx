@@ -2,17 +2,17 @@
 import { AppBar, DataTable } from "@/components/layouts";
 import { IPermissions } from "@/interfaces/permissions";
 import { GetDataApi } from "@/utils/fetcher";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 export default function Page() {
-  const [pelanggan, setPelanggan] = useState<IPermissions[]>([]);
+  const [data, setData] = useState<IPermissions[]>([]);
   const [metadata, setMetada] = useState({} as any);
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await GetDataApi("/api/permissions");
 
-      setPelanggan(response.data.data);
+      setData(response.data.data);
       setMetada(response.data.metadata);
     };
 
@@ -23,17 +23,19 @@ export default function Page() {
     <div className="space-y-5">
       <AppBar title="Daftar Izin" />
 
-      <DataTable
-        metadata={metadata}
-        pathForm="/dashboard/management/izin/form"
-        datas={pelanggan}
-        columns={[
-          {
-            label: "Nama Izin",
-            renderCell: (item: IPermissions) => item.name,
-          },
-        ]}
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <DataTable
+          metadata={metadata}
+          pathForm="/dashboard/management/izin/form"
+          datas={data}
+          columns={[
+            {
+              label: "Nama Izin",
+              renderCell: (item: IPermissions) => item.name,
+            },
+          ]}
+        />{" "}
+      </Suspense>
     </div>
   );
 }

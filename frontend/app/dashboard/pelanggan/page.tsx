@@ -2,7 +2,7 @@
 import { AppBar, DataTable } from "@/components/layouts";
 import { ICustomers } from "@/interfaces/customers";
 import { GetDataApi } from "@/utils/fetcher";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 export default function Page() {
   const [pelanggan, setPelanggan] = useState<ICustomers[]>([]);
@@ -23,21 +23,23 @@ export default function Page() {
     <div className="space-y-5">
       <AppBar title="Pelanggan" />
 
-      <DataTable
-        metadata={metadata}
-        pathForm="/dashboard/pelanggan/form"
-        datas={pelanggan}
-        columns={[
-          {
-            label: "Nama Pelanggan",
-            renderCell: (item: ICustomers) => item.name,
-          },
-          {
-            label: "Nomor Telpon",
-            renderCell: (item: ICustomers) => item.phone,
-          },
-        ]}
-      />
+      <Suspense fallback={<div>Loading...</div>}>
+        <DataTable
+          metadata={metadata}
+          pathForm="/dashboard/pelanggan/form"
+          datas={pelanggan}
+          columns={[
+            {
+              label: "Nama Pelanggan",
+              renderCell: (item: ICustomers) => item.name,
+            },
+            {
+              label: "Nomor Telpon",
+              renderCell: (item: ICustomers) => item.phone,
+            },
+          ]}
+        />
+      </Suspense>
     </div>
   );
 }
