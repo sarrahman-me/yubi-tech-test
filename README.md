@@ -43,6 +43,15 @@ Ini adalah tugas sederhana untuk menggambarkan kemampuan coding saya untuk melam
 
 - Saya menggunakan Spot Instance untuk menghemat biaya, namun aplikasi ini akan mati kapan saja
 
+## Aplikasi
+
+URL aplikasi : https://main.d119vpe6jp51oh.amplifyapp.com
+
+### Note :
+
+- email: superadmin@gmail.com
+- password: superadmin
+
 ## Instalasi dan Cara Menjalankan
 
 Docker adalah cara termudah dan teraman untuk menjalankan aplikasi ini tanpa masalah konfigurasi apa pun. Jika Anda belum memiliki Docker, Anda dapat mengunduhnya dari situs resmi Docker.
